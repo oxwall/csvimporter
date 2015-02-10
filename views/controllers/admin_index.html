@@ -1,0 +1,154 @@
+<div class="ow_std_margin">
+    {if $step eq "step_upload"}
+        <div class="ow_superwide ow_automargin">
+            {block_decorator name="box" addClass="ow_stdmargin" langLabel="csvimporter+upload_file" iconClass="ow_ic_new"}
+                <p>{text key="csvimporter+csv_uploader_desc"}</p>
+                <div class="ow_box ow_superwide" style="text-align:center;margin:0 auto 20px; display: block;">
+                    {form name="csvimport_form"}
+                        {label name="csv_file"}
+                        {input name="csv_file"}<br />
+                        {error name="csv_file"}<br />
+                        {submit name="send" class="ow_ic_save"}
+                    {/form}
+                </div>
+            {/block_decorator}
+        </div>
+    {elseif $step eq "step_preview"}
+        <div class="ow_smallmargin">
+            <h3 style="color: #313131; font: bold 20px Arial; padding: 20px 0;">
+                {text key="csvimporter+preview_page_desc"}
+            </h3>
+            <table class="ow_table_2">
+                <tr>
+                    <th>Delimiter</th>
+                    <th>Enclosure</th>
+                    <th>Escape</th>
+                </tr>
+                <tr class="ow_tr_last">
+                    <td>{$defineDelimiter}</td>
+                    <td>{$defineEnclosure}</td>
+                    <td>{$defineEscape}</td>
+                </tr>
+            </table>
+        </div>
+        <div style="max-height: 600px; overflow: auto" class="ow_std_margin ow_box">
+            <table class="csv_preview">
+                {foreach from=$previewData item="row"}
+                    <tr>
+                        {foreach from=$row item="data"}
+                            <td>{$data|truncate:100:"..."}</td>
+                        {/foreach}
+                    </tr>
+                {foreachelse}
+                    <tr>
+                        <td>No items</td>
+                    </tr>
+                {/foreach}
+            </table>
+        </div>
+         <div class="clearfix ow_stdmargin ow_submit ow_btn_delimiter">
+             <div class="ow_right">
+                {decorator name="button" class="ow_ic_left_arrow" langLabel="csvimporter+btn_back_caption" id="btn-back"}&nbsp;
+                {decorator name="button" class="ow_ic_right_arrow" langLabel="csvimporter+btn_import_caption" id="btn-forward-process"}
+             </div>
+        </div>
+    {elseif $step eq "step_process" || $step eq "step_import" || $step eq "step_rollback"}
+        <div class="ow_superwide ow_automargin ow_stdmargin">
+            <div class="ow_std_margin ow_center">
+                {if $step eq "step_process"}
+                    {text key="csvimporter+processing_process_desc"}
+                {elseif $step eq "step_import"}
+                    {text key="csvimporter+processing_import_desc"}
+                {elseif $step eq "step_rollback"}
+                    {text key="csvimporter+processing_rollback_desc"}
+                {/if}
+            </div>
+            <div id="csvimporter-progressbar" class="progressbar">
+                <span class="progressbar-caption">0%</span>
+                <div class="progressbar-complete"></div>
+            </div>
+        </div>
+        {if $step ne "step_rollback"}
+            <div class="ow_center">
+                {decorator name="button" class="ow_ic_delete" langLabel="csvimporter+btn_cancel_caption" id="btn-back"}
+            </div>
+        {/if}
+    {elseif $step eq "step_ready"}
+        {form name="import-settings"}
+            <div style="overflow: auto" class="ow_std_margin">
+                <table class="ow_table_1 ow_form">
+                    <tr class="ow_tr_first">
+                        {foreach from=$dumpTableFields key="key" item="item"}
+                            <th>
+                                {text key="csvimporter+field_caption"}&nbsp;{$key}<br /><br />
+                                {input name="questions[]" class="question" field=$item.Field}
+                                {input name="import-fields[][`$item.Field`]"}
+                            </th>
+                        {/foreach}
+                    </tr>
+                    {foreach from=$previewData item="row"}
+                        <tr class="{cycle values="ow_alt1,ow_alt2"}">
+                            {foreach from=$row item="data"}
+                                <td>{$data|truncate:100:"..."}</td>
+                            {/foreach}
+                        </tr>
+                    {foreachelse}
+                        <tr>
+                            <td>No items</td>
+                        </tr>
+                    {/foreach}
+                </table>
+            </div>
+            <table class="ow_table_3 ow_std_margin">
+                <tr>
+                    <td class="ow_label">{text key="csvimporter+total_profiles"}:</td>
+                    <td class="ow_value" colspan="{count($previewData.0) - 1}">{$totalProfiles}</td>
+                </tr>
+            </table>
+            <table class="ow_table_1 ow_form">
+                <tr>
+                    <th colspan="3" class="ow_name ow_txtleft">
+                        <span class="ow_section_icon ow_ic_gear_wheel">
+                            {text key="csvimporter+options_table_caption"}
+                        </span>
+                    </th>
+                </tr>
+                <tr class="ow_alt1">
+                    <td class="ow_label">{label name="generate-password"}</td>
+                    <td class="ow_value">{input name="generate-password"}</td>
+                    <td class="ow_desc">{desc name="generate-password"}</td>
+                </tr>
+                <tr class="ow_alt2">
+                    <td class="ow_label">{label name="send-welcome-message"}</td>
+                    <td class="ow_value">{input name="send-welcome-message"}</td>
+                    <td class="ow_desc">{desc name="send-welcome-message"}</td>
+                </tr>
+            </table>
+            <div class="clearfix ow_stdmargin ow_submit ow_btn_delimiter">
+                <div class="ow_right">
+                    {decorator name="button" class="ow_ic_left_arrow" langLabel="csvimporter+btn_back_caption" id="btn-back"}&nbsp;
+                    {submit name="start-import"}
+                </div>
+            </div>
+            <p style="padding: 0 20px;">
+                {text key="csvimporter+import_note"}
+            </p>
+        {/form}
+    {elseif $step eq "step_done"}
+        <div class="ow_std_margin ow_center">
+            {decorator name="button" class="ow_ic_left_arrow" langLabel="csvimporter+btn_new_import_caption" id="btn-forward"}
+        </div>
+        <table class="ow_table_3 ow_std_margin">
+            <tr>
+                <td class="ow_label">{text key="csvimporter+count_success_imported"}</td>
+                <td class="ow_value">{$countSuccessImported}</td>
+            </tr>
+            {if $countFailImported > 0}
+                <tr>
+                    <td class="ow_label">{text key="csvimporter+count_fail_imported"}</td>
+                    <td class="ow_value">{$countFailImported}</td>
+                </tr>
+            {/if}
+        </table>
+    {/if}
+</div>

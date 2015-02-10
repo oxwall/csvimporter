@@ -1,0 +1,27 @@
+.progressbar
+{
+    border-radius: 2px;
+    border: 1px solid #CDCDCD;
+    height: 20px;
+    background: url(../img/background.png) repeat-x;
+    position: relative;
+    text-align: center;
+}
+
+.progressbar-complete
+{
+    height: 20px;
+    background: url(../img/complete.png) repeat-x;
+    position: absolute;
+    z-index: 100;
+}
+
+.progressbar-caption
+{
+    margin: auto;
+    position: absolute;
+    z-index: 101;
+    color: white;
+    margin-left: -500px;
+    width: 1000px;
+}
