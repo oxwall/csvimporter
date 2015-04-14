@@ -65,7 +65,7 @@ class CsvFileValidator extends OW_Validator
 {
     public function isValid( $value = NULL )
     {
-        if ( !empty($_FILES['csv_file']) && in_array($_FILES['csv_file']['type'], array('text/csv', 'application/zip', 'application/octet-stream')) && is_uploaded_file($_FILES['csv_file']['tmp_name']) )
+        if ( !empty($_FILES['csv_file']) && in_array($_FILES['csv_file']['type'], array('text/csv', 'application/zip', 'application/octet-stream', 'text/comma-separated-values')) && is_uploaded_file($_FILES['csv_file']['tmp_name']) )
         {
             return TRUE;
         }
